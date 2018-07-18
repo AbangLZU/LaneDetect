@@ -12,7 +12,7 @@ laneDetection::laneDetection(const cv::Mat _oriImage, const cv::Mat _perspective
     midPoint = _oriImage.size().width >> 1;
     midHeight = _oriImage.size().height * 0.55;
     stepY = oriImage.size().height / blockNum;
-    Vector3d initV;
+    Eigen::Vector3d initV;
     initV << 0, 0, 0;
     for (int i = 0; i < 5; i++) {
         curveCoefRecordL[i] = initV;
@@ -214,10 +214,10 @@ bool laneDetection::laneCoefEstimate() {
     //To fitting the lance curve by using least square method
     int countThreshold = 300;
     if ((laneLcount > countThreshold) && (laneRcount > countThreshold)) {
-        VectorXd xValueL(laneLcount);
-        VectorXd xValueR(laneRcount);
-        MatrixXd leftMatrix(laneLcount, 3);
-        MatrixXd rightMatrix(laneRcount, 3);
+        Eigen::VectorXd xValueL(laneLcount);
+        Eigen::VectorXd xValueR(laneRcount);
+        Eigen::MatrixXd leftMatrix(laneLcount, 3);
+        Eigen::MatrixXd rightMatrix(laneRcount, 3);
 
         //left lane curve coefficients estimation
         for (int i = 0; i < laneLcount; i++) {

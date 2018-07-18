@@ -12,9 +12,7 @@
 #include <Eigen/Dense>
 #include "math.h"
 
-//using namespace cv;
 using namespace std;
-using namespace Eigen;
 
 class laneDetection
 {
@@ -50,10 +48,10 @@ private:
     const int blockNum; //Number of windows per line.
     int stepY; //Window moving step.
     const int windowSize; //Window Size (Horizontal).
-    Vector3d curveCoefL; //The coefficients of the curve (left).
-    Vector3d curveCoefR; //The coefficients of the curve (left).
-    Vector3d curveCoefRecordL[5]; //To keep the last five record to smooth the current coefficients (left).
-    Vector3d curveCoefRecordR[5]; //To keep the last five record to smooth the current coefficients (right).
+    Eigen::Vector3d curveCoefL; //The coefficients of the curve (left).
+    Eigen::Vector3d curveCoefR; //The coefficients of the curve (left).
+    Eigen::Vector3d curveCoefRecordL[5]; //To keep the last five record to smooth the current coefficients (left).
+    Eigen::Vector3d curveCoefRecordR[5]; //To keep the last five record to smooth the current coefficients (right).
     int recordCounter;
     bool failDetectFlag; // To indicate whether the road marks is detected succesfully.
     void calHist();
