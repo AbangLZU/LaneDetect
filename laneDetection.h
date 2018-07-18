@@ -40,7 +40,9 @@ private:
     vector<cv::Point2f> curvePointsR;
     int laneLcount;
     int laneRcount;
+    //
     int midPoint; //The mid position of the view.
+    //重要参数：ROI区域设置
     int midHeight;
     int leftLanePos; //The detected left lane boundary position.
     int rightLanePos; //The detected right lane boundary position.
