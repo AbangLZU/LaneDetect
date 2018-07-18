@@ -81,12 +81,12 @@ void laneDetection::boundaryDetection() {
     rightLanePos = distance(histogram.begin(), maxRPtr);
 
     //draw the lane boundary on iamge
-//    if ((initRecordCount < 5) || failDetectFlag) {
-//        line(mergeImageRGB, cv::Point2f(leftLanePos, 0), cv::Point2f(leftLanePos, mergeImageRGB.size().height),
-//             cv::Scalar(0, 255, 0), 10);
-//        line(mergeImageRGB, cv::Point2f(rightLanePos, 0), cv::Point2f(rightLanePos, mergeImageRGB.size().height),
-//             cv::Scalar(0, 255, 0), 10);
-//    }
+    if ((initRecordCount < 5) || failDetectFlag) {
+        line(mergeImageRGB, cv::Point2f(leftLanePos, 0), cv::Point2f(leftLanePos, mergeImageRGB.size().height),
+             cv::Scalar(0, 255, 0), 10);
+        line(mergeImageRGB, cv::Point2f(rightLanePos, 0), cv::Point2f(rightLanePos, mergeImageRGB.size().height),
+             cv::Scalar(0, 255, 0), 10);
+    }
 }
 
 
@@ -98,8 +98,8 @@ void laneDetection::laneSearch(const int &lanePos, vector<cv::Point2f> &_line, i
     //Lane search.
     const int skipStep = 4;
     int nextPosX = lanePos;
-    int xLU = 0, yLU = 0;
-    int xRB = 0, yRB = 0;
+    int xLU = 0, yLU = 0; // left up point
+    int xRB = 0, yRB = 0; // right bottom point
     int sumX = 0;
     int xcounter = 0;
     lanecount = 0;
@@ -155,7 +155,7 @@ void laneDetection::laneSearch(const int &lanePos, vector<cv::Point2f> &_line, i
                         }
                     }
                 }
-//                rectangle(mergeImageRGB, cv::Point2f(xLU, yLU), cv::Point2f(xRB, yRB), cv::Scalar(255, 0, 0), 5);
+                rectangle(mergeImageRGB, cv::Point2f(xLU, yLU), cv::Point2f(xRB, yRB), cv::Scalar(255, 0, 0), 5);
             }
 
         }
@@ -177,33 +177,36 @@ void laneDetection::laneSearch(const int &lanePos, vector<cv::Point2f> &_line, i
                         }
 
                     }
-                    mergeImageRGB.at<cv::Vec3b>(i, xtemp)[0] = 0;
-                    mergeImageRGB.at<cv::Vec3b>(i, xtemp)[1] = 255;
-                    mergeImageRGB.at<cv::Vec3b>(i, xtemp)[2] = 255;
+                    // 用于绘制binary图
+//                    mergeImageRGB.at<cv::Vec3b>(i, xtemp)[0] = 0;
+//                    mergeImageRGB.at<cv::Vec3b>(i, xtemp)[1] = 255;
+//                    mergeImageRGB.at<cv::Vec3b>(i, xtemp)[2] = 255;
                 }
             }
         }
-        sumX /= xcounter;
-        if ((sumX > 0) && (sumX < mergeImageRGB.size().width)) {
-            if (dir == 'L') {
-                leftLanePos = sumX;
-                line(mergeImageRGB, cv::Point2f(leftLanePos, 0), cv::Point2f(leftLanePos, mergeImageRGB.size().height),
-                     cv::Scalar(0, 255, 0), 10);
+        // 画绿线
+//        sumX /= xcounter;
+//        if ((sumX > 0) && (sumX < mergeImageRGB.size().width)) {
+//            if (dir == 'L') {
+//                leftLanePos = sumX;
+//                line(mergeImageRGB, cv::Point2f(leftLanePos, 0), cv::Point2f(leftLanePos, mergeImageRGB.size().height),
+//                     cv::Scalar(0, 255, 0), 10);
+//
+//            } else {
+//                rightLanePos = sumX;
+//                line(mergeImageRGB, cv::Point2f(rightLanePos, 0),
+//                     cv::Point2f(rightLanePos, mergeImageRGB.size().height), cv::Scalar(0, 255, 0), 10);
+//            }
+//        } else {
+//            if (dir == 'L')
+//                line(mergeImageRGB, cv::Point2f(leftLanePos, 0), cv::Point2f(leftLanePos, mergeImageRGB.size().height),
+//                     cv::Scalar(0, 255, 0), 10);
+//
+//            else
+//                line(mergeImageRGB, cv::Point2f(rightLanePos, 0),
+//                     cv::Point2f(rightLanePos, mergeImageRGB.size().height), cv::Scalar(0, 255, 0), 10);
+//        }
 
-            } else {
-                rightLanePos = sumX;
-                line(mergeImageRGB, cv::Point2f(rightLanePos, 0),
-                     cv::Point2f(rightLanePos, mergeImageRGB.size().height), cv::Scalar(0, 255, 0), 10);
-            }
-        } else {
-            if (dir == 'L')
-                line(mergeImageRGB, cv::Point2f(leftLanePos, 0), cv::Point2f(leftLanePos, mergeImageRGB.size().height),
-                     cv::Scalar(0, 255, 0), 10);
-
-            else
-                line(mergeImageRGB, cv::Point2f(rightLanePos, 0),
-                     cv::Point2f(rightLanePos, mergeImageRGB.size().height), cv::Scalar(0, 255, 0), 10);
-        }
     }
 
 }
@@ -212,6 +215,7 @@ void laneDetection::laneSearch(const int &lanePos, vector<cv::Point2f> &_line, i
 //Using SVD to solve the coefficients of the curve.
 bool laneDetection::laneCoefEstimate() {
     //To fitting the lance curve by using least square method
+    // 重要参数：进行多项式拟合的检测特征点阈值
     int countThreshold = 300;
     if ((laneLcount > countThreshold) && (laneRcount > countThreshold)) {
         Eigen::VectorXd xValueL(laneLcount);
@@ -283,20 +287,20 @@ void laneDetection::laneFitting() {
     }
     cv::Mat curveL(curvePointsL, true);
     curveL.convertTo(curveL, CV_32S);
-    polylines(maskImage, curveL, false, cv::Scalar(255, 0, 0), 20, CV_AA);
+    cv::polylines(maskImage, curveL, false, cv::Scalar(255, 0,0 ), 20, CV_AA);
     cv::Mat curveR(curvePointsR, true);
     curveR.convertTo(curveR, CV_32S);
-    polylines(maskImage, curveR, false, cv::Scalar(0, 0, 255), 20, CV_AA);
+    cv::polylines(maskImage, curveR, false, cv::Scalar(0, 0, 255), 20, CV_AA);
 
-    uchar *matPtr;
-    for (int i = 0; i < maskImage.size().height; i++) {
-        matPtr = maskImage.data + i * maskImage.size().width * 3;
-        for (int j = curvePointsL[i].x; j <= curvePointsR[i].x; j++) {
-            *(matPtr + j * 3) = 0;
-            *(matPtr + j * 3 + 1) = 255;
-            *(matPtr + j * 3 + 2) = 0;
-        }
-    }
+//    uchar *matPtr;
+//    for (int i = 0; i < maskImage.size().height; i++) {
+//        matPtr = maskImage.data + i * maskImage.size().width * 3;
+//        for (int j = curvePointsL[i].x; j <= curvePointsR[i].x; j++) {
+//            *(matPtr + j * 3) = 255;
+//            *(matPtr + j * 3 + 1) = 255;
+//            *(matPtr + j * 3 + 2) = 187;
+//        }
+//    }
 
 }
 
@@ -334,7 +338,7 @@ cv::Mat laneDetection::getWarpMask() {
 }
 
 cv::Mat laneDetection::getFinalResult() {
-    addWeighted(maskImageWarp, 0.5, oriImage, 1, 0, finalResult);
+    addWeighted(maskImage, 1, warpOriImage, 1, 0, finalResult);
     return finalResult;
 }
 

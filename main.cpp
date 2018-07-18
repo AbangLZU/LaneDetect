@@ -108,16 +108,16 @@ int main(int argc, char **argv)
 
         //Detect the distance to lane center.
         laneDistant = LaneAlgoVideo.getLaneCenterDist();
-//        if(laneDistant > 0)
-//        {
-//            std::cout << abs(laneDistant) << "m " << " To the Right" << std::endl;
-//        }
-//        else
-//        {
-//            std::cout << abs(laneDistant) << "m " << " To the Left"<< std::endl;
-//        }
+        if(laneDistant > 0)
+        {
+            std::cout << abs(laneDistant) << "m " << " To the Right" << std::endl;
+        }
+        else
+        {
+            std::cout << abs(laneDistant) << "m " << " To the Left"<< std::endl;
+        }
 
-        mergeImage = LaneAlgoVideo.getMergeImage();
+        mergeImage = LaneAlgoVideo.getFinalResult();
         imshow("Real Time Execution", mergeImage);
 
         clock_t end_time = clock();
