@@ -9,7 +9,6 @@ using namespace std;
 cv::VideoCapture laneVideo;
 cv::Mat videoFrame; // Video Frame.
 cv::Mat videoFrameUndistorted; // Video Frame (after calibration).
-cv::Mat videoFramePerspective; // Video Frame (after perspective transform).
 cv::Mat _videoFrameUndistorted;
 cv::Size videoSize; // Input Variable Size.
 cv::Mat cameraMatrix, dist; //Calibration Matrix.
@@ -101,7 +100,7 @@ int main(int argc, char **argv)
         clock_t start_time = clock();
 
         //Start Homography
-        warpPerspective(_videoFrameUndistorted, videoFramePerspective, perspectiveMatrix, videoSize);
+//        warpPerspective(_videoFrameUndistorted, videoFramePerspective, perspectiveMatrix, videoSize);
 
         //Applying lane detection algorithm
         LaneAlgoVideo.laneDetctAlgo();
